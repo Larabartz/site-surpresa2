@@ -1,0 +1,303 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crie sua Surpresa</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #f5f5f5;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      padding: 15px 25px;
+      font-size: 18px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Crie sua Surpresa Interativa</h1>
+  <p>Monte uma página personalizada e envie para quem você ama!</p>
+  <button onclick="window.location.href='editor.html'">Começar</button>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Editor de Surpresa</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h1 { text-align: center; }
+    .bloco {
+      background: white;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    label, input, textarea, select {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 8px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover { background-color: #218838; }
+  </style>
+</head>
+<body>
+  <h1>Monte sua Surpresa</h1>
+
+  <div class="bloco">
+    <h2>💬 Mensagem de texto</h2>
+    <textarea id="mensagem" placeholder="Digite sua mensagem..."></textarea>
+  </div>
+
+  <div class="bloco">
+    <h2>🖼️ Imagem com legenda</h2>
+    <input type="text" id="imagemUrl" placeholder="URL da imagem">
+    <input type="text" id="imagemLegenda" placeholder="Legenda da imagem">
+  </div>
+
+  <div class="bloco">
+    <h2>❓ Quiz</h2>
+    <input type="text" id="pergunta" placeholder="Pergunta">
+    <input type="text" id="resposta" placeholder="Resposta correta">
+  </div>
+
+  <div class="bloco">
+    <h2>💌 Carta surpresa</h2>
+    <textarea id="carta" placeholder="Escreva sua carta aqui..."></textarea>
+  </div>
+
+  <div class="bloco">
+    <h2>📸 Galeria de fotos</h2>
+    <textarea id="galeria" placeholder="URLs separadas por vírgula"></textarea>
+  </div>
+
+  <div class="bloco">
+    <h2>🎮 Mini jogo da memória (pré-definido)</h2>
+    <p>Este será adicionado automaticamente na visualização!</p>
+  </div>
+
+  <button onclick="salvar()">Salvar e Visualizar</button>
+
+  <script>
+    function salvar() {
+      const dados = {
+        mensagem: document.getElementById('mensagem').value,
+        imagemUrl: document.getElementById('imagemUrl').value,
+        imagemLegenda: document.getElementById('imagemLegenda').value,
+        quiz: {
+          pergunta: document.getElementById('pergunta').value,
+          resposta: document.getElementById('resposta').value
+        },
+        carta: document.getElementById('carta').value,
+        galeria: document.getElementById('galeria').value.split(',').map(url => url.trim()),
+        jogoMemoria: true
+      };
+      localStorage.setItem('surpresa', JSON.stringify(dados));
+      window.location.href = 'visualizar.html';
+    }
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Surpresa Interativa</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .bloco {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    }
+    h2 { color: #333; }
+    img { max-width: 100%; border-radius: 6px; }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 60px);
+      gap: 10px;
+      justify-content: center;
+    }
+    .card {
+      width: 60px;
+      height: 60px;
+      font-size: 30px;
+      background: #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div id="conteudo"></div>
+
+  <script>
+    const dados = JSON.parse(localStorage.getItem('surpresa'));
+    const container = document.getElementById('conteudo');
+
+    // Mensagem
+    if (dados.mensagem) {
+      container.innerHTML += `<div class="bloco"><h2>💬 Mensagem</h2><p>${dados.mensagem}</p></div>`;
+    }
+
+    // Imagem com legenda
+    if (dados.imagemUrl) {
+      container.innerHTML += `
+        <div class="bloco">
+          <h2>🖼️ Imagem Especial</h2>
+          <img src="${dados.imagemUrl}" alt="Imagem">
+          <p>${dados.imagemLegenda}</p>
+        </div>
+      `;
+    }
+
+    // Quiz
+    if (dados.quiz.pergunta) {
+      container.innerHTML += `
+        <div class="bloco" id="quizBloco">
+          <h2>❓ Quiz</h2>
+          <p>${dados.quiz.pergunta}</p>
+          <input type="text" id="respostaInput" placeholder="Sua resposta">
+          <button onclick="verificarResposta()">Responder</button>
+          <p id="feedback"></p>
+        </div>
+      `;
+    }
+
+    // Carta
+    if (dados.carta) {
+      container.innerHTML += `<div class="bloco"><h2>💌 Carta</h2><p>${dados.carta.replace(/\n/g, '<br>')}</p></div>`;
+    }
+
+    // Galeria
+    if (dados.galeria && dados.galeria.length > 0) {
+      let galeriaHTML = dados.galeria.map(url => `<img src="${url}" style="max-width:100%; margin-bottom:10px;">`).join('');
+      container.innerHTML += `<div class="bloco"><h2>📸 Galeria</h2>${galeriaHTML}</div>`;
+    }
+
+    // Jogo da Memória
+    if (dados.jogoMemoria) {
+      container.innerHTML += `
+        <div class="bloco">
+          <h2>🎮 Jogo da Memória</h2>
+          <div class="memory-grid" id="memoryGame"></div>
+        </div>
+      `;
+      iniciarJogoMemoria();
+    }
+
+    function verificarResposta() {
+      const resposta = document.getElementById('respostaInput').value.trim().toLowerCase();
+      const correta = dados.quiz.resposta.trim().toLowerCase();
+      const feedback = document.getElementById('feedback');
+      feedback.textContent = resposta === correta ? "✅ Resposta correta!" : "❌ Tente novamente!";
+    }
+
+    function iniciarJogoMemoria() {
+      const emojis = ["🍎", "🍌", "🍓", "🍇", "🍎", "🍌", "🍓", "🍇"];
+      const embaralhado = emojis.sort(() => 0.5 - Math.random());
+      const game = document.getElementById('memoryGame');
+      let aberto = [];
+      let bloqueado = [];
+
+      embaralhado.forEach((emoji, index) => {
+        const carta = document.createElement('div');
+        carta.className = 'card';
+        carta.dataset.index = index;
+        carta.dataset.valor = emoji;
+        carta.textContent = '';
+        carta.addEventListener('click', () => {
+          if (bloqueado.includes(index) || aberto.includes(index)) return;
+
+          carta.textContent = emoji;
+          aberto.push(index);
+
+          if (aberto.length === 2) {
+            const [a, b] = aberto;
+            const cartaA = document.querySelector(`[data-index="${a}"]`);
+            const cartaB = document.querySelector(`[data-index="${b}"]`);
+
+            if (cartaA.dataset.valor === cartaB.dataset.valor) {
+              bloqueado.push(a, b);
+              aberto = [];
+            } else {
+              setTimeout(() => {
+                cartaA.textContent = '';
+                cartaB.textContent = '';
+                aberto = [];
+              }, 800);
+            }
+          }
+        });
+        game.appendChild(carta);
+      });
+    }
+  </script>
+</body>
+</html>
